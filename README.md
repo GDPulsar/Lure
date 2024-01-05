@@ -1,2 +1,2 @@
-# Biospherical-Expansion
-Expanding the biosphere!
+# Locator
+Improving the locate command!
