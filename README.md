@@ -1,2 +1,2 @@
-# Locator
-Improving the locate command!
+# Lure
+Lure mobs into spawning with a new interactive mob spawn system.
