@@ -18,8 +18,8 @@ apply plugin: 'maven-publish'
 apply plugin: 'org.spongepowered.mixin'
 
 version = '1.0.0'
-group = 'com.Apothic0n.Locator' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
-archivesBaseName = 'locator'
+group = 'com.Apothic0n.Lure' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
+archivesBaseName = 'lure'
 
 // Mojang ships Java 17 to end users in 1.18+, so your mod should target Java 17.
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
@@ -62,7 +62,7 @@ minecraft {
             property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
 
             mods {
-                locator {
+                lure {
                     source sourceSets.main
                 }
             }
@@ -84,7 +84,7 @@ minecraft {
             //property 'forge.logging.console.level', 'debug'
 
             mods {
-                locator {
+                lure {
                     source sourceSets.main
                 }
             }
@@ -106,10 +106,10 @@ minecraft {
             //property 'forge.logging.console.level', 'debug'
 
             // Specify the modid for data generation, where to output the resulting resource, and where to look for existing resources.
-            args '--mod', 'locator', '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
+            args '--mod', 'lure', '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
 
             mods {
-                locator {
+                lure {
                     source sourceSets.main
                 }
             }
@@ -175,8 +175,8 @@ dependencies {
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
     mixin {
         // MixinGradle Settings
-        add sourceSets.main, 'mixins.locator.refmap.json'
-        config 'mixins.locator.json'
+        add sourceSets.main, 'mixins.lure.refmap.json'
+        config 'mixins.lure.json'
 
         debug.verbose = true
         debug.export = true
@@ -191,7 +191,7 @@ dependencies {
 jar {
     manifest {
         attributes([
-                "Specification-Title"     : "Locator",
+                "Specification-Title"     : "Lure",
                 "Specification-Vendor"    : "Apothic0n",
                 "Specification-Version"   : "1",
                 "Implementation-Title"    : project.name,
