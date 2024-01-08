@@ -206,7 +206,7 @@ public class CommonForgeEvents {
             BlockState belowState = level.getBlockState(pos.below());
             if (belowState.isSolid() || belowState.is(Blocks.LAVA)) {
                 boolean light = (level.getBrightness(LightLayer.BLOCK, pos) > 0 || (level.getBrightness(LightLayer.SKY, pos) > 0 && level.canSeeSky(pos) && level.isDay()));
-                if ((light == true || (level.getBrightness(LightLayer.SKY, pos) > 0 && level.canSeeSky(pos))) && level.dimensionType().natural()) {//creatures
+                if (light == true && level.dimensionType().natural()) {//creatures
                     CreatureSpawnParameters creatureSpawnParameters = new CreatureSpawnParameters(EntityType.BAT, List.of(Blocks.STRUCTURE_BLOCK), 4);
                     for (int i = 0; i < creatures.size(); i++) {
                         List<CreatureSpawnParameters> potentialCreatures = creatures.get(i).get(belowState.getBlock());
@@ -226,22 +226,29 @@ public class CommonForgeEvents {
                         creatureSpawnParameters.entityType().spawn((ServerLevel) level, pos, MobSpawnType.NATURAL);
                         mobSpawned = true;
                     }
-                } else if (light == false && !belowState.is(Blocks.LAVA)) {//monsters
+                }
+                if (light == false && !belowState.is(Blocks.LAVA)) {//monsters
                     List<MonsterSpawnParameters> potentialMonsters = monsters.get(level.getMoonPhase());
-                    MonsterSpawnParameters monsterSpawnParameters = potentialMonsters.get((int) Math.round(Math.random() * (potentialMonsters.size()-1)));
+                    int firstChoice = (int) Math.round(Math.random() * (potentialMonsters.size()-1));
+                    MonsterSpawnParameters monsterSpawnParameters = potentialMonsters.get(firstChoice);
                     Holder<Biome> biome = level.getBiome(pos);
                     if (!biome.is(Biomes.MUSHROOM_FIELDS)) {
                         boolean suitableBiome = false;
-                        for (int i = 0; i < monsterSpawnParameters.validBiomes().size(); i++) {
-                            if (biome.is(monsterSpawnParameters.validBiomes().get(i))) {
-                                suitableBiome = true;
-                                break;
-                            }
-                        }
-                        for (int i = 0; i < monsterSpawnParameters.validBiomeTags().size(); i++) {
-                            if (biome.is(monsterSpawnParameters.validBiomeTags().get(i))) {
-                                suitableBiome = true;
-                                break;
+                        for (int a = firstChoice; a < potentialMonsters.size(); a++) {
+                            if (suitableBiome == false) {
+                                monsterSpawnParameters = potentialMonsters.get(a);
+                                for (int i = 0; i < monsterSpawnParameters.validBiomes().size(); i++) {
+                                    if (biome.is(monsterSpawnParameters.validBiomes().get(i))) {
+                                        suitableBiome = true;
+                                        break;
+                                    }
+                                }
+                                for (int i = 0; i < monsterSpawnParameters.validBiomeTags().size(); i++) {
+                                    if (biome.is(monsterSpawnParameters.validBiomeTags().get(i))) {
+                                        suitableBiome = true;
+                                        break;
+                                    }
+                                }
                             }
                         }
                         boolean ghastSpawnable = true;
@@ -249,11 +256,18 @@ public class CommonForgeEvents {
                             ghastSpawnable = level.getBlockStatesIfLoaded(AABB.of(new BoundingBox(pos.north(2).east(2).getX(), pos.getY(), pos.north(2).east(2).getZ(), pos.south(2).west(2).getX(), pos.above(4).getY(), pos.south(2).west(2).getZ()))).allMatch(BlockBehaviour.BlockStateBase::isAir);
                         }
                         if (ghastSpawnable == true && suitableBiome == true && matchingBlocks(List.of(Blocks.AIR), neighbors, 4) >= 4) {
-                            monsterSpawnParameters.entityType().spawn((ServerLevel) level, pos, MobSpawnType.NATURAL);
                             if (isExtra == false) {
                                 attemptSpawn(level, pos.north(), true);
+                                attemptSpawn(level, pos.east(), true);
+                                attemptSpawn(level, pos.south(), true);
+                                attemptSpawn(level, pos.east(), true);
+                                attemptSpawn(level, pos.north().east(), true);
+                                attemptSpawn(level, pos.north().west(), true);
                                 attemptSpawn(level, pos.south().east(), true);
                                 attemptSpawn(level, pos.south().west(), true);
+
+                            } else {
+                                monsterSpawnParameters.entityType().spawn((ServerLevel) level, pos, MobSpawnType.NATURAL);
                             }
                             mobSpawned = true;
                         }
