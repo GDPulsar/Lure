@@ -205,8 +205,8 @@ public class CommonForgeEvents {
             );
             BlockState belowState = level.getBlockState(pos.below());
             if (belowState.isSolid() || belowState.is(Blocks.LAVA)) {
-                int light = level.getBrightness(LightLayer.SKY, pos) + level.getBrightness(LightLayer.BLOCK, pos);
-                if (light > 0 && level.dimensionType().natural()) {//creatures
+                boolean light = (level.getBrightness(LightLayer.BLOCK, pos) > 0 || (level.getBrightness(LightLayer.SKY, pos) > 0 && level.canSeeSky(pos) && level.isDay()));
+                if ((light == true || (level.getBrightness(LightLayer.SKY, pos) > 0 && level.canSeeSky(pos))) && level.dimensionType().natural()) {//creatures
                     CreatureSpawnParameters creatureSpawnParameters = new CreatureSpawnParameters(EntityType.BAT, List.of(Blocks.STRUCTURE_BLOCK), 4);
                     for (int i = 0; i < creatures.size(); i++) {
                         List<CreatureSpawnParameters> potentialCreatures = creatures.get(i).get(belowState.getBlock());
@@ -226,7 +226,7 @@ public class CommonForgeEvents {
                         creatureSpawnParameters.entityType().spawn((ServerLevel) level, pos, MobSpawnType.NATURAL);
                         mobSpawned = true;
                     }
-                } else if (light == 0 && !belowState.is(Blocks.LAVA)) {//monsters
+                } else if (light == false && !belowState.is(Blocks.LAVA)) {//monsters
                     List<MonsterSpawnParameters> potentialMonsters = monsters.get(level.getMoonPhase());
                     MonsterSpawnParameters monsterSpawnParameters = potentialMonsters.get((int) Math.round(Math.random() * (potentialMonsters.size()-1)));
                     Holder<Biome> biome = level.getBiome(pos);
@@ -250,6 +250,9 @@ public class CommonForgeEvents {
                         }
                         if (ghastSpawnable == true && suitableBiome == true && matchingBlocks(List.of(Blocks.AIR), neighbors, 4) >= 4) {
                             monsterSpawnParameters.entityType().spawn((ServerLevel) level, pos, MobSpawnType.NATURAL);
+                            attemptSpawn(level, pos.north());
+                            attemptSpawn(level, pos.south().east());
+                            attemptSpawn(level, pos.south().west());
                             mobSpawned = true;
                         }
                     }
