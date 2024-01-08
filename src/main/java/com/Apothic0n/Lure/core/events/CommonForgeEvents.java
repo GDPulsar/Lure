@@ -12,6 +12,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LightLayer;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.level.block.Block;
@@ -184,12 +185,16 @@ public class CommonForgeEvents {
         BlockState centerState = level.getBlockState(pos);
         BlockState aboveState = level.getBlockState(pos.above());
         if (!centerState.isSolid() && !aboveState.isSolid()) {
+            List<Block> neighbors = List.of(
+                    level.getBlockState(pos.north()).getBlock(),
+                    level.getBlockState(pos.east()).getBlock(),
+                    level.getBlockState(pos.south()).getBlock(),
+                    level.getBlockState(pos.west()).getBlock()
+            );
             BlockState belowState = level.getBlockState(pos.below());
             if (belowState.isSolid() || belowState.is(Blocks.LAVA)) {
-                int light = level.getLightEmission(pos.below());
-                boolean isDay = level.isDay();
-                boolean canSeeSky = level.canSeeSky(pos);
-                if ((light > 0 || (isDay && canSeeSky)) && level.dimensionType().natural()) {//creatures
+                int light = level.getBrightness(LightLayer.SKY, pos.below()) + level.getBrightness(LightLayer.BLOCK, pos.below());
+                if (light > 0 && level.dimensionType().natural()) {//creatures
                     CreatureSpawnParameters creatureSpawnParameters = new CreatureSpawnParameters(EntityType.BAT, List.of(Blocks.STRUCTURE_BLOCK), 4);
                     for (int i = 0; i < creatures.size(); i++) {
                         List<CreatureSpawnParameters> potentialCreatures = creatures.get(i).get(belowState.getBlock());
@@ -198,12 +203,6 @@ public class CommonForgeEvents {
                             creatureSpawnParameters = potentialCreatures.get((int) Math.round(Math.random() * (potentialCreatures.size()-1)));
                         }
                     }
-                    List<Block> neighbors = List.of(
-                            level.getBlockState(pos.north()).getBlock(),
-                            level.getBlockState(pos.east()).getBlock(),
-                            level.getBlockState(pos.south()).getBlock(),
-                            level.getBlockState(pos.west()).getBlock()
-                    );
                     if (matchingBlocks(creatureSpawnParameters.adjacentBlocks(), neighbors, creatureSpawnParameters.amountRequired()) >= creatureSpawnParameters.amountRequired()) {
                         creatureSpawnParameters.entityType().spawn((ServerLevel) level, pos, MobSpawnType.NATURAL);
                         creatureSpawnParameters.entityType().spawn((ServerLevel) level, pos, MobSpawnType.NATURAL);
@@ -211,12 +210,6 @@ public class CommonForgeEvents {
                     }
                 } else if (level.dimensionType().ultraWarm() && belowState.is(Blocks.LAVA)) {//nether creatures
                     CreatureSpawnParameters creatureSpawnParameters = new CreatureSpawnParameters(EntityType.STRIDER, List.of(Blocks.AIR), 4);
-                    List<Block> neighbors = List.of(
-                            level.getBlockState(pos.north()).getBlock(),
-                            level.getBlockState(pos.east()).getBlock(),
-                            level.getBlockState(pos.south()).getBlock(),
-                            level.getBlockState(pos.west()).getBlock()
-                    );
                     if (matchingBlocks(creatureSpawnParameters.adjacentBlocks(), neighbors, creatureSpawnParameters.amountRequired()) >= creatureSpawnParameters.amountRequired()) {
                         creatureSpawnParameters.entityType().spawn((ServerLevel) level, pos, MobSpawnType.NATURAL);
                         mobSpawned = true;
@@ -238,7 +231,7 @@ public class CommonForgeEvents {
                             break;
                         }
                     }
-                    if (suitableBiome == true) {
+                    if (suitableBiome == true && matchingBlocks(List.of(Blocks.AIR), neighbors, 4) >= 4) {
                         monsterSpawnParameters.entityType().spawn((ServerLevel) level, pos, MobSpawnType.NATURAL);
                         mobSpawned = true;
                     }
