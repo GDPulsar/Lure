@@ -183,7 +183,7 @@ public class CommonForgeEvents {
                 randomPos = new BlockPos(randomPos.getX(), level.getHeight(Heightmap.Types.WORLD_SURFACE, randomPos.getX(), randomPos.getZ()), randomPos.getZ());
                 if ((randomPos.getX() - player.getX()) > 24 || (randomPos.getZ() - player.getZ()) > 24 || (randomPos.getY() - player.getY()) > 24) {
                     for (int y = randomPos.getY(); y > level.getMinBuildHeight(); y--) {
-                        if (attemptSpawn(level, new BlockPos(randomPos.getX(), y, randomPos.getZ()))) {
+                        if (attemptSpawn(level, new BlockPos(randomPos.getX(), y, randomPos.getZ()), false)) {
                             break;
                         }
                     }
@@ -192,7 +192,7 @@ public class CommonForgeEvents {
         }
     }
 
-    private static boolean attemptSpawn(Level level, BlockPos pos) {
+    private static boolean attemptSpawn(Level level, BlockPos pos, boolean isExtra) {
         boolean mobSpawned = false;
         BlockState centerState = level.getBlockState(pos);
         BlockState aboveState = level.getBlockState(pos.above());
@@ -250,9 +250,11 @@ public class CommonForgeEvents {
                         }
                         if (ghastSpawnable == true && suitableBiome == true && matchingBlocks(List.of(Blocks.AIR), neighbors, 4) >= 4) {
                             monsterSpawnParameters.entityType().spawn((ServerLevel) level, pos, MobSpawnType.NATURAL);
-                            attemptSpawn(level, pos.north());
-                            attemptSpawn(level, pos.south().east());
-                            attemptSpawn(level, pos.south().west());
+                            if (isExtra == false) {
+                                attemptSpawn(level, pos.north(), true);
+                                attemptSpawn(level, pos.south().east(), true);
+                                attemptSpawn(level, pos.south().west(), true);
+                            }
                             mobSpawned = true;
                         }
                     }
