@@ -8,6 +8,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.data.worldgen.DimensionTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.BiomeTags;
+import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.player.Player;
@@ -17,10 +18,13 @@ import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.dimension.BuiltinDimensionTypes;
 import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.level.levelgen.Heightmap;
+import net.minecraft.world.level.levelgen.structure.BoundingBox;
+import net.minecraft.world.phys.AABB;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -87,6 +91,7 @@ public class CommonForgeEvents {
                     new MonsterSpawnParameters(EntityType.ZOMBIFIED_PIGLIN, List.of(), List.of(Biomes.NETHER_WASTES, Biomes.CRIMSON_FOREST)),
                     new MonsterSpawnParameters(EntityType.PIGLIN, List.of(), List.of(Biomes.NETHER_WASTES, Biomes.CRIMSON_FOREST)),
                     new MonsterSpawnParameters(EntityType.HOGLIN, List.of(), List.of(Biomes.CRIMSON_FOREST)),
+                    new MonsterSpawnParameters(EntityType.GHAST, List.of(), List.of(Biomes.NETHER_WASTES, Biomes.SOUL_SAND_VALLEY, Biomes.BASALT_DELTAS)),
                     new MonsterSpawnParameters(EntityType.SLIME, List.of(), List.of(Biomes.SWAMP))
             ),
             List.of(
@@ -98,6 +103,7 @@ public class CommonForgeEvents {
                     new MonsterSpawnParameters(EntityType.ZOMBIFIED_PIGLIN, List.of(), List.of(Biomes.NETHER_WASTES, Biomes.CRIMSON_FOREST)),
                     new MonsterSpawnParameters(EntityType.PIGLIN, List.of(), List.of(Biomes.NETHER_WASTES, Biomes.CRIMSON_FOREST)),
                     new MonsterSpawnParameters(EntityType.HOGLIN, List.of(), List.of(Biomes.CRIMSON_FOREST)),
+                    new MonsterSpawnParameters(EntityType.GHAST, List.of(), List.of(Biomes.NETHER_WASTES, Biomes.SOUL_SAND_VALLEY, Biomes.BASALT_DELTAS)),
                     new MonsterSpawnParameters(EntityType.SLIME, List.of(), List.of(Biomes.SWAMP))
             ),
             List.of(
@@ -107,6 +113,7 @@ public class CommonForgeEvents {
                     new MonsterSpawnParameters(EntityType.ZOMBIFIED_PIGLIN, List.of(), List.of(Biomes.NETHER_WASTES, Biomes.CRIMSON_FOREST)),
                     new MonsterSpawnParameters(EntityType.PIGLIN, List.of(), List.of(Biomes.NETHER_WASTES, Biomes.CRIMSON_FOREST)),
                     new MonsterSpawnParameters(EntityType.HOGLIN, List.of(), List.of(Biomes.CRIMSON_FOREST)),
+                    new MonsterSpawnParameters(EntityType.GHAST, List.of(), List.of(Biomes.NETHER_WASTES, Biomes.SOUL_SAND_VALLEY, Biomes.BASALT_DELTAS)),
                     new MonsterSpawnParameters(EntityType.SLIME, List.of(), List.of(Biomes.SWAMP))
             ),
             List.of(
@@ -116,6 +123,7 @@ public class CommonForgeEvents {
                     new MonsterSpawnParameters(EntityType.ZOMBIFIED_PIGLIN, List.of(), List.of(Biomes.NETHER_WASTES, Biomes.CRIMSON_FOREST)),
                     new MonsterSpawnParameters(EntityType.PIGLIN, List.of(), List.of(Biomes.NETHER_WASTES, Biomes.CRIMSON_FOREST)),
                     new MonsterSpawnParameters(EntityType.HOGLIN, List.of(), List.of(Biomes.CRIMSON_FOREST)),
+                    new MonsterSpawnParameters(EntityType.GHAST, List.of(), List.of(Biomes.NETHER_WASTES, Biomes.SOUL_SAND_VALLEY, Biomes.BASALT_DELTAS)),
                     new MonsterSpawnParameters(EntityType.SLIME, List.of(), List.of(Biomes.SWAMP))
             ),
             List.of(
@@ -125,6 +133,7 @@ public class CommonForgeEvents {
                     new MonsterSpawnParameters(EntityType.ZOMBIFIED_PIGLIN, List.of(), List.of(Biomes.NETHER_WASTES, Biomes.CRIMSON_FOREST)),
                     new MonsterSpawnParameters(EntityType.PIGLIN, List.of(), List.of(Biomes.NETHER_WASTES, Biomes.CRIMSON_FOREST)),
                     new MonsterSpawnParameters(EntityType.HOGLIN, List.of(), List.of(Biomes.CRIMSON_FOREST)),
+                    new MonsterSpawnParameters(EntityType.GHAST, List.of(), List.of(Biomes.NETHER_WASTES, Biomes.SOUL_SAND_VALLEY, Biomes.BASALT_DELTAS)),
                     new MonsterSpawnParameters(EntityType.SLIME, List.of(), List.of(Biomes.SWAMP))
             ),
             List.of(
@@ -136,6 +145,7 @@ public class CommonForgeEvents {
                     new MonsterSpawnParameters(EntityType.ZOMBIFIED_PIGLIN, List.of(), List.of(Biomes.NETHER_WASTES, Biomes.CRIMSON_FOREST)),
                     new MonsterSpawnParameters(EntityType.PIGLIN, List.of(), List.of(Biomes.NETHER_WASTES, Biomes.CRIMSON_FOREST)),
                     new MonsterSpawnParameters(EntityType.HOGLIN, List.of(), List.of(Biomes.CRIMSON_FOREST)),
+                    new MonsterSpawnParameters(EntityType.GHAST, List.of(), List.of(Biomes.NETHER_WASTES, Biomes.SOUL_SAND_VALLEY, Biomes.BASALT_DELTAS)),
                     new MonsterSpawnParameters(EntityType.SLIME, List.of(), List.of(Biomes.SWAMP))
             ),
             List.of(
@@ -144,6 +154,7 @@ public class CommonForgeEvents {
                     new MonsterSpawnParameters(EntityType.ZOMBIFIED_PIGLIN, List.of(), List.of(Biomes.NETHER_WASTES, Biomes.CRIMSON_FOREST)),
                     new MonsterSpawnParameters(EntityType.PIGLIN, List.of(), List.of(Biomes.NETHER_WASTES, Biomes.CRIMSON_FOREST)),
                     new MonsterSpawnParameters(EntityType.HOGLIN, List.of(), List.of(Biomes.CRIMSON_FOREST)),
+                    new MonsterSpawnParameters(EntityType.GHAST, List.of(), List.of(Biomes.NETHER_WASTES, Biomes.SOUL_SAND_VALLEY, Biomes.BASALT_DELTAS)),
                     new MonsterSpawnParameters(EntityType.SLIME, List.of(), List.of(Biomes.SWAMP))
             ),
             List.of(
@@ -153,6 +164,7 @@ public class CommonForgeEvents {
                     new MonsterSpawnParameters(EntityType.ZOMBIFIED_PIGLIN, List.of(), List.of(Biomes.NETHER_WASTES, Biomes.CRIMSON_FOREST)),
                     new MonsterSpawnParameters(EntityType.PIGLIN, List.of(), List.of(Biomes.NETHER_WASTES, Biomes.CRIMSON_FOREST)),
                     new MonsterSpawnParameters(EntityType.HOGLIN, List.of(), List.of(Biomes.CRIMSON_FOREST)),
+                    new MonsterSpawnParameters(EntityType.GHAST, List.of(), List.of(Biomes.NETHER_WASTES, Biomes.SOUL_SAND_VALLEY, Biomes.BASALT_DELTAS)),
                     new MonsterSpawnParameters(EntityType.SLIME, List.of(), List.of(Biomes.SWAMP))
             )
     );
@@ -184,7 +196,7 @@ public class CommonForgeEvents {
         boolean mobSpawned = false;
         BlockState centerState = level.getBlockState(pos);
         BlockState aboveState = level.getBlockState(pos.above());
-        if (!centerState.isSolid() && !aboveState.isSolid()) {
+        if (!(pos.getY() >= level.getMaxBuildHeight()) && !centerState.isSolid() && !aboveState.isSolid()) {
             List<Block> neighbors = List.of(
                     level.getBlockState(pos.north()).getBlock(),
                     level.getBlockState(pos.east()).getBlock(),
@@ -193,7 +205,7 @@ public class CommonForgeEvents {
             );
             BlockState belowState = level.getBlockState(pos.below());
             if (belowState.isSolid() || belowState.is(Blocks.LAVA)) {
-                int light = level.getBrightness(LightLayer.SKY, pos.below()) + level.getBrightness(LightLayer.BLOCK, pos.below());
+                int light = level.getBrightness(LightLayer.SKY, pos) + level.getBrightness(LightLayer.BLOCK, pos);
                 if (light > 0 && level.dimensionType().natural()) {//creatures
                     CreatureSpawnParameters creatureSpawnParameters = new CreatureSpawnParameters(EntityType.BAT, List.of(Blocks.STRUCTURE_BLOCK), 4);
                     for (int i = 0; i < creatures.size(); i++) {
@@ -232,7 +244,11 @@ public class CommonForgeEvents {
                                 break;
                             }
                         }
-                        if (suitableBiome == true && matchingBlocks(List.of(Blocks.AIR), neighbors, 4) >= 4) {
+                        boolean ghastSpawnable = true;
+                        if (monsterSpawnParameters.entityType().equals(EntityType.GHAST)) {
+                            ghastSpawnable = level.getBlockStatesIfLoaded(AABB.of(new BoundingBox(pos.north(2).east(2).getX(), pos.getY(), pos.north(2).east(2).getZ(), pos.south(2).west(2).getX(), pos.above(4).getY(), pos.south(2).west(2).getZ()))).allMatch(BlockBehaviour.BlockStateBase::isAir);
+                        }
+                        if (ghastSpawnable == true && suitableBiome == true && matchingBlocks(List.of(Blocks.AIR), neighbors, 4) >= 4) {
                             monsterSpawnParameters.entityType().spawn((ServerLevel) level, pos, MobSpawnType.NATURAL);
                             mobSpawned = true;
                         }
