@@ -70,7 +70,7 @@ public class CommonForgeEvents {
                     new CreatureSpawnParameters(EntityType.PARROT, List.of(Blocks.AIR), 4)
             )),
             Map.of(Blocks.STONE, List.of(
-                    new CreatureSpawnParameters(EntityType.GOAT, List.of(Blocks.WHEAT), 4)
+                    new CreatureSpawnParameters(EntityType.GOAT, List.of(Blocks.WHEAT), 1)
             ))
     );
     static List<List<MonsterSpawnParameters>> monsters = List.of(
@@ -218,22 +218,24 @@ public class CommonForgeEvents {
                     List<MonsterSpawnParameters> potentialMonsters = monsters.get(level.getMoonPhase());
                     MonsterSpawnParameters monsterSpawnParameters = potentialMonsters.get((int) Math.round(Math.random() * (potentialMonsters.size()-1)));
                     Holder<Biome> biome = level.getBiome(pos);
-                    boolean suitableBiome = false;
-                    for (int i = 0; i < monsterSpawnParameters.validBiomes().size(); i++) {
-                        if (biome.is(monsterSpawnParameters.validBiomes().get(i))) {
-                            suitableBiome = true;
-                            break;
+                    if (!biome.is(Biomes.MUSHROOM_FIELDS)) {
+                        boolean suitableBiome = false;
+                        for (int i = 0; i < monsterSpawnParameters.validBiomes().size(); i++) {
+                            if (biome.is(monsterSpawnParameters.validBiomes().get(i))) {
+                                suitableBiome = true;
+                                break;
+                            }
                         }
-                    }
-                    for (int i = 0; i < monsterSpawnParameters.validBiomeTags().size(); i++) {
-                        if (biome.is(monsterSpawnParameters.validBiomeTags().get(i))) {
-                            suitableBiome = true;
-                            break;
+                        for (int i = 0; i < monsterSpawnParameters.validBiomeTags().size(); i++) {
+                            if (biome.is(monsterSpawnParameters.validBiomeTags().get(i))) {
+                                suitableBiome = true;
+                                break;
+                            }
                         }
-                    }
-                    if (suitableBiome == true && matchingBlocks(List.of(Blocks.AIR), neighbors, 4) >= 4) {
-                        monsterSpawnParameters.entityType().spawn((ServerLevel) level, pos, MobSpawnType.NATURAL);
-                        mobSpawned = true;
+                        if (suitableBiome == true && matchingBlocks(List.of(Blocks.AIR), neighbors, 4) >= 4) {
+                            monsterSpawnParameters.entityType().spawn((ServerLevel) level, pos, MobSpawnType.NATURAL);
+                            mobSpawned = true;
+                        }
                     }
                 }
             }
