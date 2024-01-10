@@ -1,5 +1,6 @@
 package com.Apothic0n.Lure.mixin;
 
+import com.Apothic0n.Lure.core.events.CommonForgeEvents;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.nbt.CompoundTag;
@@ -110,7 +111,7 @@ public abstract class NaturalSpawnerMixin {
                                 entity.moveTo(d0, (double)blockpos.getY(), d1, p_220454_.nextFloat() * 360.0F, 0.0F);
                                 if (entity instanceof Mob) {
                                     Mob mob = (Mob)entity;
-                                    if ((net.minecraftforge.event.ForgeEventFactory.checkSpawnPosition(mob, p_220451_, MobSpawnType.CHUNK_GENERATION)) && !entity.getType().builtInRegistryHolder().key().location().getNamespace().equals("minecraft")) {
+                                    if ((net.minecraftforge.event.ForgeEventFactory.checkSpawnPosition(mob, p_220451_, MobSpawnType.CHUNK_GENERATION)) && !CommonForgeEvents.affectedMobs.contains(entity.getType())) {
                                         spawngroupdata = mob.finalizeSpawn(p_220451_, p_220451_.getCurrentDifficultyAt(mob.blockPosition()), MobSpawnType.CHUNK_GENERATION, spawngroupdata, (CompoundTag)null);
                                         p_220451_.addFreshEntityWithPassengers(mob);
                                         flag = true;
@@ -176,7 +177,7 @@ public abstract class NaturalSpawnerMixin {
 
                             if (isValidSpawnPostitionForType(p_47040_, p_47039_, structuremanager, chunkgenerator, mobspawnsettings$spawnerdata, blockpos$mutableblockpos, d2) && p_47043_.test(mobspawnsettings$spawnerdata.type, blockpos$mutableblockpos, p_47041_)) {
                                 Mob mob = getMobForSpawn(p_47040_, mobspawnsettings$spawnerdata.type);
-                                if (mob == null || mob.getType().builtInRegistryHolder().key().location().getNamespace().equals("minecraft")) {
+                                if (mob == null || CommonForgeEvents.affectedMobs.contains(mob.getType())) {
                                     return;
                                 }
 
