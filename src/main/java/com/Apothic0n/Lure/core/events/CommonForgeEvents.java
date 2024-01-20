@@ -272,8 +272,8 @@ public class CommonForgeEvents {
                         if (monsterSpawnParameters.entityType().equals(EntityType.GHAST)) {
                             ghastSpawnable = level.getBlockStatesIfLoaded(AABB.of(new BoundingBox(pos.north(2).east(2).getX(), pos.getY(), pos.north(2).east(2).getZ(), pos.south(2).west(2).getX(), pos.above(4).getY(), pos.south(2).west(2).getZ()))).allMatch(BlockBehaviour.BlockStateBase::isAir);
                         }
-                        if (!(!monsterSpawnParameters.entityType().equals(EntityType.DROWNED) && centerState.is(Blocks.WATER)) && !(monsterSpawnParameters.entityType().equals(EntityType.DROWNED) && centerState.is(Blocks.AIR)) &&
-                                ghastSpawnable == true && suitableBiome == true && matchingBlocks(List.of(Blocks.AIR), neighbors, 4) >= 4) {
+                        if (!(!monsterSpawnParameters.entityType().equals(EntityType.DROWNED) && centerState.is(Blocks.WATER)) && !(monsterSpawnParameters.entityType().equals(EntityType.DROWNED) && !centerState.is(Blocks.WATER)) &&
+                                !(monsterSpawnParameters.entityType().equals(EntityType.DROWNED) && !aboveState.is(Blocks.WATER)) && ghastSpawnable == true && suitableBiome == true && matchingBlocks(List.of(Blocks.AIR), neighbors, 4) >= 4) {
                             if (isExtra == false) {
                                 attemptSpawn(level, pos.north(), true);
                                 attemptSpawn(level, pos.east(), true);
