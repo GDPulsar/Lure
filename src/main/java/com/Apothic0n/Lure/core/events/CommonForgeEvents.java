@@ -210,7 +210,7 @@ public class CommonForgeEvents {
         ResourceKey<Level> dimension = level.dimension();
         BlockState centerState = level.getBlockState(pos);
         BlockState aboveState = level.getBlockState(pos.above());
-        if (!(pos.getY() >= level.getMaxBuildHeight()) && !centerState.isSolid() && !aboveState.isSolid()) {
+        if (pos.getY() < level.getMaxBuildHeight()-2 && !centerState.isSolid() && !aboveState.isSolid()) {
             List<Block> neighbors = List.of(
                     level.getBlockState(pos.north()).getBlock(),
                     level.getBlockState(pos.east()).getBlock(),
@@ -218,7 +218,7 @@ public class CommonForgeEvents {
                     level.getBlockState(pos.west()).getBlock()
             );
             BlockState belowState = level.getBlockState(pos.below());
-            if (belowState.isSolid() || belowState.is(Blocks.LAVA)) {
+            if ((belowState.isSolid() || belowState.is(Blocks.LAVA)) && !belowState.is(Blocks.BEDROCK)) {
                 boolean light = (level.getBrightness(LightLayer.BLOCK, pos) > 0 || (level.getBrightness(LightLayer.SKY, pos) > 0 && level.canSeeSky(pos) && level.isDay()));
                 ChunkPos chunkPos = level.getChunkAt(pos).getPos();
                 if (light == true && dimension.equals(Level.OVERWORLD) && !LureSavedData.contains((ServerLevel) level, chunkPos)) {//creatures
@@ -300,7 +300,7 @@ public class CommonForgeEvents {
         int matches = 0;
         for (int a = 0; a < adjacentBlocks.size(); a++) {
             for (int n = 0; n < neighbors.size(); n++) {
-                if (adjacentBlocks.get(a).equals(neighbors.get(n))) {
+                if (adjacentBlocks.get(a).equals(neighbors.get(n)) || !neighbors.get(n).defaultBlockState().isSolid() && adjacentBlocks.contains(Blocks.AIR)) {
                     matches++;
                     if (matches == maxMatches) {
                         return matches;
