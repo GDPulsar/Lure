@@ -49,7 +49,7 @@ public record MonsterSpawnParameters(EntityType entityType, List<TagKey<Biome>> 
             json.add("validBiomeTags", validBiomeTagsJson);
             JsonArray validBiomesJson = new JsonArray();
             for (ResourceKey<?> resourceKey : monsterSpawnParameters.validBiomes()) {
-                validBiomeTagsJson.add(resourceKey.location().toString());
+                validBiomesJson.add(resourceKey.location().toString());
             }
             json.add("validBiomes", validBiomesJson);
             return json;
