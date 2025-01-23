@@ -4,11 +4,12 @@ import com.Apothic0n.Lure.Lure;
 import com.Apothic0n.Lure.core.LureSavedData;
 import com.Apothic0n.Lure.core.api.CreatureSpawnParameters;
 import com.Apothic0n.Lure.core.api.MonsterSpawnParameters;
+import com.Apothic0n.Lure.core.config.ConfigHandler;
+import com.Apothic0n.Lure.core.config.LureConfig;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.tags.BiomeTags;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.player.Player;
@@ -29,159 +30,9 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
 import java.util.List;
-import java.util.Map;
 
 @Mod.EventBusSubscriber(modid = Lure.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class CommonForgeEvents {
-    public static List<EntityType> affectedMobs = List.of(
-            EntityType.PIG, EntityType.FROG, EntityType.SHEEP, EntityType.CHICKEN, EntityType.RABBIT, EntityType.OCELOT, EntityType.HORSE,
-            EntityType.MOOSHROOM, EntityType.COW, EntityType.DONKEY, EntityType.FOX, EntityType.PANDA, EntityType.WOLF, EntityType.POLAR_BEAR,
-            EntityType.PARROT, EntityType.GOAT, EntityType.TURTLE,
-
-            EntityType.ZOMBIE, EntityType.ZOMBIE_VILLAGER, EntityType.DROWNED, EntityType.HUSK, EntityType.SPIDER, EntityType.SKELETON,
-            EntityType.STRAY, EntityType.CREEPER, EntityType.ENDERMAN, EntityType.WITCH, EntityType.ZOMBIFIED_PIGLIN, EntityType.PIGLIN,
-            EntityType.HOGLIN, EntityType.GHAST, EntityType.SLIME
-    );
-
-    static List<Map<Block, List<CreatureSpawnParameters>>> creatures = List.of(
-            Map.of(Blocks.MUD, List.of(
-                    new CreatureSpawnParameters(EntityType.PIG, List.of(Blocks.CARROTS), 1),
-                    new CreatureSpawnParameters(EntityType.FROG, List.of(Blocks.MANGROVE_ROOTS), 1)
-            )),
-            Map.of(Blocks.GRASS_BLOCK, List.of(
-                    new CreatureSpawnParameters(EntityType.SHEEP, List.of(Blocks.WHEAT), 1),
-                    new CreatureSpawnParameters(EntityType.CHICKEN, List.of(Blocks.GRASS, Blocks.TALL_GRASS), 4),
-                    new CreatureSpawnParameters(EntityType.RABBIT, List.of(Blocks.CARROTS), 1),
-                    new CreatureSpawnParameters(EntityType.OCELOT, List.of(Blocks.JUNGLE_LEAVES), 2),
-                    new CreatureSpawnParameters(EntityType.HORSE, List.of(Blocks.HAY_BLOCK), 1)
-            )),
-            Map.of(Blocks.MYCELIUM, List.of(
-                    new CreatureSpawnParameters(EntityType.MOOSHROOM, List.of(Blocks.WHEAT), 1)
-            )),
-            Map.of(Blocks.PACKED_MUD, List.of(
-                    new CreatureSpawnParameters(EntityType.COW, List.of(Blocks.WHEAT), 1),
-                    new CreatureSpawnParameters(EntityType.DONKEY, List.of(Blocks.HAY_BLOCK), 1)
-            )),
-            Map.of(Blocks.PODZOL, List.of(
-                    new CreatureSpawnParameters(EntityType.FOX, List.of(Blocks.SWEET_BERRY_BUSH), 1),
-                    new CreatureSpawnParameters(EntityType.PANDA, List.of(Blocks.BAMBOO), 1),
-                    new CreatureSpawnParameters(EntityType.WOLF, List.of(Blocks.FERN), 1)
-            )),
-            Map.of(Blocks.SNOW_BLOCK, List.of(
-                    new CreatureSpawnParameters(EntityType.POLAR_BEAR, List.of(Blocks.AIR), 4),
-                    new CreatureSpawnParameters(EntityType.RABBIT, List.of(Blocks.CARROTS), 1)
-            )),
-            Map.of(Blocks.ICE, List.of(
-                    new CreatureSpawnParameters(EntityType.POLAR_BEAR, List.of(Blocks.AIR), 4)
-            )),
-            Map.of(Blocks.SAND, List.of(
-                    new CreatureSpawnParameters(EntityType.RABBIT, List.of(Blocks.CARROTS), 1)
-            )),
-            Map.of(Blocks.JUNGLE_LEAVES, List.of(
-                    new CreatureSpawnParameters(EntityType.PARROT, List.of(Blocks.AIR), 4)
-            )),
-            Map.of(Blocks.STONE, List.of(
-                    new CreatureSpawnParameters(EntityType.GOAT, List.of(Blocks.WHEAT), 1)
-            )),
-            Map.of(Blocks.SAND, List.of(
-                    new CreatureSpawnParameters(EntityType.TURTLE, List.of(Blocks.SEAGRASS), 1)
-            ))
-    );
-    static List<List<MonsterSpawnParameters>> monsters = List.of(
-            List.of( //Full Moon
-                    new MonsterSpawnParameters(EntityType.ZOMBIE, List.of(BiomeTags.IS_OVERWORLD), List.of()),
-                    new MonsterSpawnParameters(EntityType.ZOMBIE_VILLAGER, List.of(BiomeTags.IS_OVERWORLD), List.of()),
-                    new MonsterSpawnParameters(EntityType.DROWNED, List.of(BiomeTags.IS_OVERWORLD), List.of()),
-                    new MonsterSpawnParameters(EntityType.HUSK, List.of(), List.of(Biomes.DESERT)),
-                    new MonsterSpawnParameters(EntityType.SPIDER, List.of(BiomeTags.IS_OVERWORLD), List.of()),
-                    new MonsterSpawnParameters(EntityType.SKELETON, List.of(BiomeTags.IS_OVERWORLD), List.of(Biomes.SOUL_SAND_VALLEY)),
-                    new MonsterSpawnParameters(EntityType.STRAY, List.of(), List.of(Biomes.SNOWY_PLAINS, Biomes.ICE_SPIKES, Biomes.FROZEN_RIVER)),
-                    new MonsterSpawnParameters(EntityType.CREEPER, List.of(BiomeTags.IS_OVERWORLD), List.of()),
-                    new MonsterSpawnParameters(EntityType.ENDERMAN, List.of(BiomeTags.IS_OVERWORLD, BiomeTags.IS_NETHER, BiomeTags.IS_END), List.of()),
-                    new MonsterSpawnParameters(EntityType.WITCH, List.of(BiomeTags.IS_OVERWORLD), List.of()),
-                    new MonsterSpawnParameters(EntityType.ZOMBIFIED_PIGLIN, List.of(), List.of(Biomes.NETHER_WASTES, Biomes.CRIMSON_FOREST)),
-                    new MonsterSpawnParameters(EntityType.PIGLIN, List.of(), List.of(Biomes.NETHER_WASTES, Biomes.CRIMSON_FOREST)),
-                    new MonsterSpawnParameters(EntityType.HOGLIN, List.of(), List.of(Biomes.CRIMSON_FOREST)),
-                    new MonsterSpawnParameters(EntityType.GHAST, List.of(), List.of(Biomes.NETHER_WASTES, Biomes.SOUL_SAND_VALLEY, Biomes.BASALT_DELTAS)),
-                    new MonsterSpawnParameters(EntityType.SLIME, List.of(), List.of(Biomes.SWAMP))
-            ),
-            List.of(
-                    new MonsterSpawnParameters(EntityType.ZOMBIE, List.of(BiomeTags.IS_OVERWORLD), List.of()),
-                    new MonsterSpawnParameters(EntityType.ZOMBIE_VILLAGER, List.of(BiomeTags.IS_OVERWORLD), List.of()),
-                    new MonsterSpawnParameters(EntityType.DROWNED, List.of(BiomeTags.IS_OVERWORLD), List.of()),
-                    new MonsterSpawnParameters(EntityType.HUSK, List.of(), List.of(Biomes.DESERT)),
-                    new MonsterSpawnParameters(EntityType.SKELETON, List.of(), List.of(Biomes.SOUL_SAND_VALLEY)),
-                    new MonsterSpawnParameters(EntityType.ENDERMAN, List.of(BiomeTags.IS_END), List.of()),
-                    new MonsterSpawnParameters(EntityType.ZOMBIFIED_PIGLIN, List.of(), List.of(Biomes.NETHER_WASTES, Biomes.CRIMSON_FOREST)),
-                    new MonsterSpawnParameters(EntityType.PIGLIN, List.of(), List.of(Biomes.NETHER_WASTES, Biomes.CRIMSON_FOREST)),
-                    new MonsterSpawnParameters(EntityType.HOGLIN, List.of(), List.of(Biomes.CRIMSON_FOREST)),
-                    new MonsterSpawnParameters(EntityType.GHAST, List.of(), List.of(Biomes.NETHER_WASTES, Biomes.SOUL_SAND_VALLEY, Biomes.BASALT_DELTAS)),
-                    new MonsterSpawnParameters(EntityType.SLIME, List.of(), List.of(Biomes.SWAMP))
-            ),
-            List.of(
-                    new MonsterSpawnParameters(EntityType.SPIDER, List.of(BiomeTags.IS_OVERWORLD), List.of()),
-                    new MonsterSpawnParameters(EntityType.SKELETON, List.of(), List.of(Biomes.SOUL_SAND_VALLEY)),
-                    new MonsterSpawnParameters(EntityType.ENDERMAN, List.of(BiomeTags.IS_END), List.of()),
-                    new MonsterSpawnParameters(EntityType.ZOMBIFIED_PIGLIN, List.of(), List.of(Biomes.NETHER_WASTES, Biomes.CRIMSON_FOREST)),
-                    new MonsterSpawnParameters(EntityType.PIGLIN, List.of(), List.of(Biomes.NETHER_WASTES, Biomes.CRIMSON_FOREST)),
-                    new MonsterSpawnParameters(EntityType.HOGLIN, List.of(), List.of(Biomes.CRIMSON_FOREST)),
-                    new MonsterSpawnParameters(EntityType.GHAST, List.of(), List.of(Biomes.NETHER_WASTES, Biomes.SOUL_SAND_VALLEY, Biomes.BASALT_DELTAS)),
-                    new MonsterSpawnParameters(EntityType.SLIME, List.of(), List.of(Biomes.SWAMP))
-            ),
-            List.of(
-                    new MonsterSpawnParameters(EntityType.SKELETON, List.of(BiomeTags.IS_OVERWORLD), List.of(Biomes.SOUL_SAND_VALLEY)),
-                    new MonsterSpawnParameters(EntityType.STRAY, List.of(), List.of(Biomes.SNOWY_PLAINS, Biomes.ICE_SPIKES, Biomes.FROZEN_RIVER)),
-                    new MonsterSpawnParameters(EntityType.ENDERMAN, List.of(BiomeTags.IS_END), List.of()),
-                    new MonsterSpawnParameters(EntityType.ZOMBIFIED_PIGLIN, List.of(), List.of(Biomes.NETHER_WASTES, Biomes.CRIMSON_FOREST)),
-                    new MonsterSpawnParameters(EntityType.PIGLIN, List.of(), List.of(Biomes.NETHER_WASTES, Biomes.CRIMSON_FOREST)),
-                    new MonsterSpawnParameters(EntityType.HOGLIN, List.of(), List.of(Biomes.CRIMSON_FOREST)),
-                    new MonsterSpawnParameters(EntityType.GHAST, List.of(), List.of(Biomes.NETHER_WASTES, Biomes.SOUL_SAND_VALLEY, Biomes.BASALT_DELTAS)),
-                    new MonsterSpawnParameters(EntityType.SLIME, List.of(), List.of(Biomes.SWAMP))
-            ),
-            List.of(
-                    new MonsterSpawnParameters(EntityType.SKELETON, List.of(), List.of(Biomes.SOUL_SAND_VALLEY)),
-                    new MonsterSpawnParameters(EntityType.CREEPER, List.of(BiomeTags.IS_OVERWORLD), List.of()),
-                    new MonsterSpawnParameters(EntityType.ENDERMAN, List.of(BiomeTags.IS_END), List.of()),
-                    new MonsterSpawnParameters(EntityType.ZOMBIFIED_PIGLIN, List.of(), List.of(Biomes.NETHER_WASTES, Biomes.CRIMSON_FOREST)),
-                    new MonsterSpawnParameters(EntityType.PIGLIN, List.of(), List.of(Biomes.NETHER_WASTES, Biomes.CRIMSON_FOREST)),
-                    new MonsterSpawnParameters(EntityType.HOGLIN, List.of(), List.of(Biomes.CRIMSON_FOREST)),
-                    new MonsterSpawnParameters(EntityType.GHAST, List.of(), List.of(Biomes.NETHER_WASTES, Biomes.SOUL_SAND_VALLEY, Biomes.BASALT_DELTAS)),
-                    new MonsterSpawnParameters(EntityType.SLIME, List.of(), List.of(Biomes.SWAMP))
-            ),
-            List.of(
-                    new MonsterSpawnParameters(EntityType.ZOMBIE, List.of(BiomeTags.IS_OVERWORLD), List.of()),
-                    new MonsterSpawnParameters(EntityType.ZOMBIE_VILLAGER, List.of(BiomeTags.IS_OVERWORLD), List.of()),
-                    new MonsterSpawnParameters(EntityType.DROWNED, List.of(BiomeTags.IS_OVERWORLD), List.of()),
-                    new MonsterSpawnParameters(EntityType.HUSK, List.of(), List.of(Biomes.DESERT)),
-                    new MonsterSpawnParameters(EntityType.SKELETON, List.of(), List.of(Biomes.SOUL_SAND_VALLEY)),
-                    new MonsterSpawnParameters(EntityType.ENDERMAN, List.of(BiomeTags.IS_END), List.of()),
-                    new MonsterSpawnParameters(EntityType.ZOMBIFIED_PIGLIN, List.of(), List.of(Biomes.NETHER_WASTES, Biomes.CRIMSON_FOREST)),
-                    new MonsterSpawnParameters(EntityType.PIGLIN, List.of(), List.of(Biomes.NETHER_WASTES, Biomes.CRIMSON_FOREST)),
-                    new MonsterSpawnParameters(EntityType.HOGLIN, List.of(), List.of(Biomes.CRIMSON_FOREST)),
-                    new MonsterSpawnParameters(EntityType.GHAST, List.of(), List.of(Biomes.NETHER_WASTES, Biomes.SOUL_SAND_VALLEY, Biomes.BASALT_DELTAS)),
-                    new MonsterSpawnParameters(EntityType.SLIME, List.of(), List.of(Biomes.SWAMP))
-            ),
-            List.of(
-                    new MonsterSpawnParameters(EntityType.SKELETON, List.of(), List.of(Biomes.SOUL_SAND_VALLEY)),
-                    new MonsterSpawnParameters(EntityType.ENDERMAN, List.of(BiomeTags.IS_OVERWORLD, BiomeTags.IS_NETHER, BiomeTags.IS_END), List.of()),
-                    new MonsterSpawnParameters(EntityType.ZOMBIFIED_PIGLIN, List.of(), List.of(Biomes.NETHER_WASTES, Biomes.CRIMSON_FOREST)),
-                    new MonsterSpawnParameters(EntityType.PIGLIN, List.of(), List.of(Biomes.NETHER_WASTES, Biomes.CRIMSON_FOREST)),
-                    new MonsterSpawnParameters(EntityType.HOGLIN, List.of(), List.of(Biomes.CRIMSON_FOREST)),
-                    new MonsterSpawnParameters(EntityType.GHAST, List.of(), List.of(Biomes.NETHER_WASTES, Biomes.SOUL_SAND_VALLEY, Biomes.BASALT_DELTAS)),
-                    new MonsterSpawnParameters(EntityType.SLIME, List.of(), List.of(Biomes.SWAMP))
-            ),
-            List.of(
-                    new MonsterSpawnParameters(EntityType.SKELETON, List.of(), List.of(Biomes.SOUL_SAND_VALLEY)),
-                    new MonsterSpawnParameters(EntityType.WITCH, List.of(BiomeTags.IS_OVERWORLD), List.of()),
-                    new MonsterSpawnParameters(EntityType.ENDERMAN, List.of(BiomeTags.IS_END), List.of()),
-                    new MonsterSpawnParameters(EntityType.ZOMBIFIED_PIGLIN, List.of(), List.of(Biomes.NETHER_WASTES, Biomes.CRIMSON_FOREST)),
-                    new MonsterSpawnParameters(EntityType.PIGLIN, List.of(), List.of(Biomes.NETHER_WASTES, Biomes.CRIMSON_FOREST)),
-                    new MonsterSpawnParameters(EntityType.HOGLIN, List.of(), List.of(Biomes.CRIMSON_FOREST)),
-                    new MonsterSpawnParameters(EntityType.GHAST, List.of(), List.of(Biomes.NETHER_WASTES, Biomes.SOUL_SAND_VALLEY, Biomes.BASALT_DELTAS)),
-                    new MonsterSpawnParameters(EntityType.SLIME, List.of(), List.of(Biomes.SWAMP))
-            )
-    );
-
     static int spawnTick = 20;
 
     @SubscribeEvent
@@ -219,16 +70,15 @@ public class CommonForgeEvents {
             );
             BlockState belowState = level.getBlockState(pos.below());
             if ((belowState.isSolid() || belowState.is(Blocks.LAVA)) && !belowState.is(Blocks.BEDROCK)) {
+                LureConfig config = ConfigHandler.getConfig();
+                if (config == null) return false;
                 boolean light = (level.getBrightness(LightLayer.BLOCK, pos) > 0 || (level.getBrightness(LightLayer.SKY, pos) > 0 && level.canSeeSky(pos) && level.isDay()));
                 ChunkPos chunkPos = level.getChunkAt(pos).getPos();
                 if (light == true && dimension.equals(Level.OVERWORLD) && !LureSavedData.contains((ServerLevel) level, chunkPos)) {//creatures
                     CreatureSpawnParameters creatureSpawnParameters = new CreatureSpawnParameters(EntityType.BAT, List.of(Blocks.STRUCTURE_BLOCK), 4);
-                    for (int i = 0; i < creatures.size(); i++) {
-                        List<CreatureSpawnParameters> potentialCreatures = creatures.get(i).get(belowState.getBlock());
-                        if (potentialCreatures != null) {
-                            i = creatures.size();
-                            creatureSpawnParameters = potentialCreatures.get((int) Math.round(Math.random() * (potentialCreatures.size()-1)));
-                        }
+                    if (config.creatures.containsKey(belowState.getBlock())) {
+                        List<CreatureSpawnParameters> potentialCreatures = config.creatures.get(belowState.getBlock());
+                        creatureSpawnParameters = potentialCreatures.get((int)Math.round(Math.random() * (potentialCreatures.size() - 1)));
                     }
                     if (!(!creatureSpawnParameters.entityType().equals(EntityType.TURTLE) && centerState.is(Blocks.WATER)) && matchingBlocks(creatureSpawnParameters.adjacentBlocks(), neighbors, creatureSpawnParameters.amountRequired()) >= creatureSpawnParameters.amountRequired()) {
                         LureSavedData.add((ServerLevel) level, chunkPos);
@@ -245,7 +95,7 @@ public class CommonForgeEvents {
                     }
                 }
                 if (light == false && !belowState.is(Blocks.LAVA)) {//monsters
-                    List<MonsterSpawnParameters> potentialMonsters = monsters.get(level.getMoonPhase());
+                    List<MonsterSpawnParameters> potentialMonsters = config.monsters.get(LureConfig.MoonPhase.values()[level.getMoonPhase()]);
                     int firstChoice = (int) Math.round(Math.random() * (potentialMonsters.size()-1));
                     MonsterSpawnParameters monsterSpawnParameters = potentialMonsters.get(firstChoice);
                     Holder<Biome> biome = level.getBiome(pos);
